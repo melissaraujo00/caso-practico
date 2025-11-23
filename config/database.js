@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const conectarBD = async () => {
   try {
-    // Para Vercel, usa la variable de entorno MONGODB_URI
     const mongoURI = process.env.MONGODB_URI;
     
     if (!mongoURI) {
@@ -16,10 +15,10 @@ const conectarBD = async () => {
       useUnifiedTopology: true,
     });
     
-    console.log(`✅ MongoDB conectado: ${conn.connection.host}`);
+    console.log(` MongoDB conectado: ${conn.connection.host}`);
     return conn;
   } catch (error) {
-    console.error('❌ Error conectando a MongoDB:', error.message);
+    console.error('Error conectando a MongoDB:', error.message);
     throw error;
   }
 };
