@@ -1,12 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const conectarBD = require("./config/database");
-
-// Configurar dotenv solo en desarrollo
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
-}
 
 const app = express();
 
@@ -14,54 +8,43 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Conectar a BD
-conectarBD().catch(error => {
-  console.error('Error conectando a MongoDB:', error);
-});
+// Conectar BD (no crítico)
+conectarBD();
 
-// Rutas
+// ✅ RUTAS CORRECTAS - SIN *
 app.use('/api/customers', require('./routes/customer.routes'));
 app.use('/api/shipments', require("./routes/shipment.routes"));
 
-// Ruta de salud
+// ✅ Ruta de salud simple
 app.get('/api', (req, res) => {
   res.json({ 
-    message: 'API funcionando correctamente',
+    status: 'OK', 
+    message: 'API funcionando',
     timestamp: new Date().toISOString()
   });
 });
 
-// Ruta raíz
+// ✅ Ruta raíz
 app.get('/', (req, res) => {
   res.json({ 
-    message: 'Bienvenido a la API de Caso Práctico',
-    version: '1.0.0',
-    endpoints: [
-      '/api/customers',
-      '/api/shipments'
-    ]
+    message: 'Bienvenido a la API de Envíos',
+    endpoints: ['/api', '/api/customers', '/api/shipments']
   });
 });
 
-// Manejo de errores
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ 
-    error: 'Error interno del servidor',
-    message: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message
-  });
+// ✅ Health check para Vercel
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
 });
 
-// Manejo de rutas no encontradas
-app.use('*', (req, res) => {
+// ✅ Manejo de rutas no encontradas (sin *)
+app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
 });
 
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en puerto ${PORT}`);
-  console.log(`Entorno: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 Servidor en puerto ${PORT}`);
 });
 
 module.exports = app;
