@@ -24,7 +24,7 @@ app.get('/api', (req, res) => {
 
 app.get('/', (req, res) => {
   res.json({ 
-    message: 'Bienvenido a la API de Casi Practico',
+    message: 'Bienvenido a la API de Caso Practico',
     endpoints: [ '/api/customers', '/api/shipments']
   });
 });
